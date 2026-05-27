@@ -518,10 +518,11 @@ The model has already audited its own relations in Step 5 (or it should have —
 ## What to do before publishing
 
 1. **Validate.** Run the file through [entitymap.org/validate](https://entitymap.org/validate). Fix every error. Read every warning.
-2. **Generate the HTML companion.** `entitymap.html` is required alongside `entitymap.json` per [§9 of the spec](../spec/v1.0/index.md#9-the-html-companion-file). Use the static skeleton template, the reference generator at waikay.io, or your own tooling.
-3. **Publish at the domain root.** Both files at `https://yourdomain.com/entitymap.json` and `https://yourdomain.com/entitymap.html`. No authentication, no `noindex`.
-4. **Declare discovery.** `robots.txt`, `<link rel="entitymap">` in every page's `<head>`, sitewide footer link to `entitymap.html`.
-5. **Only when you've human-reviewed the whole file**, change `verificationStatus` from `"generator-draft"` to `"self-declared"`.
+2. **Visualize.** Run the file through [entitymap.org/viewer](https://entitymap.org/viewer). 
+3. **Generate the HTML companion.** `entitymap.html` is required alongside `entitymap.json` per [§9 of the spec](../spec/v1.0/index.md#9-the-html-companion-file). Use the static skeleton template, the reference generator at waikay.io, or your own tooling.
+4. **Publish at the domain root.** Both files at `https://yourdomain.com/entitymap.json` and `https://yourdomain.com/entitymap.html`. No authentication, no `noindex`.
+5. **Declare discovery.** `robots.txt`, `<link rel="entitymap">` in every page's `<head>`, sitewide footer link to `entitymap.html`.
+6. **Only when you've human-reviewed the whole file**, change `verificationStatus` from `"generator-draft"` to `"self-declared"`.
 
 ## A worked example
 
