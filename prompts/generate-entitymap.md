@@ -69,7 +69,7 @@ The JSON document is a single object with these REQUIRED fields:
 
 Optional root fields you may use: profile (default "core"), previousVersion,
 changeLog, vocabulary (for custom predicates — only declare these if you
-genuinely need a predicate outside the standard 23).
+genuinely need a predicate outside the standard 24).
 
 ## Publisher object
 
@@ -188,7 +188,7 @@ vector databases, and the publisher field is how attribution survives.
 Relations declare typed directional links between entities:
 
   {
-    "predicate":  "IMPROVES",                     (REQUIRED, from the 23
+    "predicate":  "IMPROVES",                     (REQUIRED, from the 24
                                                    standard predicates)
     "targetId":   "e_004",                        (SHOULD, entityId of
                                                    internal target)
@@ -212,7 +212,7 @@ Context object (optional, qualifies a Tier 3 relation):
     "reviewDate":  "2026-04-01"
   }
 
-## The 23 standard predicates
+## The 24 standard predicates
 
 TIER 1 — HARD (no confidence required)
   INSTANCE_OF       subject is a specific example of object
@@ -237,6 +237,10 @@ TIER 2 — STRUCTURAL (confidence optional)
   PREVENTS          subject blocks object (inverse of ENABLES)
   CONFLICTS_WITH    subject and object are incompatible
   DESCRIBED_BY      subject is documented by object
+  OFFERS            subject (Organization) makes object commercially available
+                    [source MUST be Organization;
+                     target MUST be SoftwareProduct, Service, Platform,
+                     or PhysicalProduct]
 
 TIER 3 — INTERPRETIVE (confidence REQUIRED: "declared" or "inferred")
   IMPROVES          subject makes object better
@@ -256,6 +260,34 @@ Key predicate decision rules:
     IMPROVES (and confidence is required).
   - TARGETS vs SUITED_FOR: designed for it → TARGETS. Happens to fit →
     SUITED_FOR.
+  - OFFERS vs PRODUCED_BY: both describe the Organization↔product
+    relationship from opposite sides. Pick ONE direction; never declare
+    both between the same pair. The publisher's own EntityMap typically
+    uses OFFERS ("Acme OFFERS Widget"). Third-party EntityMaps describing
+    someone else's products may prefer PRODUCED_BY ("Widget PRODUCED_BY Acme").
+
+## FORBIDDEN inverted predicate forms
+
+EntityMap predicates are directional. The following inverted/passive forms
+are NOT valid and the validator will reject them. If you need the inverse
+meaning, swap subject and target and use the standard predicate:
+
+  ENABLED_BY              → flip: "Tool ENABLES Outcome"
+  MEASURED_BY             → flip: "Metric MEASURES Concept"
+  PRODUCES, PRODUCED_FOR  → flip: "Product PRODUCED_BY Organization"
+  DEPENDED_ON_BY          → flip: "Dependent DEPENDS_ON Dependency"
+  REQUIRED_BY             → flip: "Consumer REQUIRES Dependency"
+  IMPROVED_BY             → flip: "Cause IMPROVES Effect"
+  DEGRADED_BY             → flip: "Cause DEGRADES Effect"
+  COVERS_BY, COVERED_BY   → flip: "Hub COVERS SubTopic"
+  DESCRIBES               → use DESCRIBED_BY in the reverse direction
+  AFFILIATED_WITH_BY      → flip: "Person AFFILIATED_WITH Organization"
+  OFFERED_BY              → flip: "Organization OFFERS Product"
+
+If you find yourself wanting to write a predicate ending in _BY that
+isn't AUTHORED_BY, PRODUCED_BY, REGULATED_BY, or DESCRIBED_BY (the four
+standard predicates that end in _BY), you're inventing an inverse.
+Swap subject and target instead.
 
 ## DO NOT add sameAs URIs
 
@@ -281,9 +313,14 @@ The validator at entitymap.org/validate will REJECT (error, not warning):
   - MEASURES used on a non-Metric source entity
   - AFFILIATED_WITH used on a non-Person source entity
   - COVERS used on non-hub source type
+  - OFFERS used on non-Organization source entity
+  - OFFERS used with target that is not SoftwareProduct, Service,
+    Platform, or PhysicalProduct
   - Both directions of PART_OF/INCLUDES declared between the same pair
-  - IMPROVES and DEGRADES, or ENABLES and PREVENTS, declared between
-    the same pair
+  - IMPROVES and DEGRADES, or ENABLES and PREVENTS, or OFFERS and
+    PRODUCED_BY, declared between the same pair
+  - Use of any forbidden inverted predicate form (MEASURED_BY,
+    ENABLED_BY, PRODUCES, DESCRIBES, OFFERED_BY, etc.)
   - Chunk text exceeding 600 characters
   - More than 5 chunks per entity
 
@@ -351,7 +388,8 @@ Apply the relation rules strictly:
      warning.
 
   4. Never declare BOTH directions of an inverse pair (PART_OF/INCLUDES,
-     IMPROVES/DEGRADES, ENABLES/PREVENTS) between the same two entities.
+     IMPROVES/DEGRADES, ENABLES/PREVENTS, OFFERS/PRODUCED_BY) between
+     the same two entities.
 
   5. For Tier 3 predicates, set "confidence" to:
        - "declared" if my page text explicitly makes the claim
@@ -363,6 +401,9 @@ Apply the relation rules strictly:
        - AFFILIATED_WITH: source entity MUST be @type: "Person"
        - COVERS: source entity MUST be @type: "Concept",
          "ProprietaryTerm", or "Taxonomy"
+       - OFFERS: source entity MUST be @type: "Organization";
+         target entity MUST be @type: "SoftwareProduct", "Service",
+         "Platform", or "PhysicalProduct"
 
   7. Add a "context" object on Tier 3 relations when the source page
      qualifies the claim (e.g. condition, temporal, jurisdiction).
@@ -399,12 +440,16 @@ Apply these specific tests to each relation:
            point to one, the verdict is REMOVE.
 
   Test B — Predicate fit. Is this actually the closest predicate from
-           the 23, or did you reach for it because it sounded plausible?
+           the 24, or did you reach for it because it sounded plausible?
            Specifically:
              - Did you use IMPROVES where ENABLES would be more honest?
              - Did you use RELATES_TO because nothing else came to mind?
              - Did you use TARGETS where SUITED_FOR fits better (or
                vice versa)?
+             - Did you invent an inverted form (MEASURED_BY, ENABLED_BY,
+               PRODUCES, DESCRIBES, etc.)? If yes, this is automatic REMOVE
+               — replace by flipping subject/target and using the standard
+               predicate.
            If a better predicate exists, the verdict is REPLACE.
 
   Test C — Tier 3 confidence. For IMPROVES, DEGRADES, LEADS_TO,
@@ -416,11 +461,16 @@ Apply these specific tests to each relation:
   Test D — Structural rules. Did this relation violate:
              - Inverse-pair forbidden combos
                (PART_OF + INCLUDES, IMPROVES + DEGRADES,
-                ENABLES + PREVENTS on the same pair)
+                ENABLES + PREVENTS, OFFERS + PRODUCED_BY on the same pair)
              - Type-constrained predicate rules
                (MEASURES source must be Metric; AFFILIATED_WITH source
                 must be Person; COVERS source must be Concept,
-                ProprietaryTerm, or Taxonomy)
+                ProprietaryTerm, or Taxonomy; OFFERS source must be
+                Organization with target SoftwareProduct, Service,
+                Platform, or PhysicalProduct)
+             - Inverted/passive predicate forms (MEASURED_BY, ENABLED_BY,
+               PRODUCES, DESCRIBES, OFFERED_BY, etc.) — see the FORBIDDEN
+               list in the embedded spec
            If yes, the verdict is REMOVE or REPLACE.
 
   Test E — RELATES_TO budget. Count how many RELATES_TO relations are
@@ -462,7 +512,7 @@ The model has already audited its own relations in Step 5 (or it should have —
 - **Read the audit table first.** The KEEP / WEAKEN / REPLACE / REMOVE lines tell you where the model was uncertain. The REMOVE and REPLACE lines are a good prompt to think about whether *similar* mistakes were missed in the KEEP rows.
 - **Open every chunk.** Read the `text` field, then open `sourceUrl` and confirm the passage is on the page, verbatim. If it's paraphrased or invented, replace it with a real extractive passage. The model's audit doesn't cover chunks.
 - **Re-check every Tier 3 `confidence: "declared"`.** "Declared" means the page says it explicitly. If the page only implies it, downgrade to `"inferred"`. If the page doesn't say it at all, delete the relation entirely.
-- **Spot-check predicate type constraints.** `MEASURES` only on `Metric` entities. `AFFILIATED_WITH` only on `Person` entities. `COVERS` only on `Concept`, `ProprietaryTerm`, or `Taxonomy` entities. The validator catches these but it's faster to fix yourself.
+- **Spot-check predicate type constraints.** `MEASURES` only on `Metric` entities. `AFFILIATED_WITH` only on `Person` entities. `COVERS` only on `Concept`, `ProprietaryTerm`, or `Taxonomy` entities. `OFFERS` only on `Organization` entities with `SoftwareProduct`/`Service`/`Platform`/`PhysicalProduct` targets. The validator catches these but it's faster to fix yourself.
 - **Add `sameAs` URIs by hand.** For each `Concept` entity with an obvious Wikidata equivalent, search wikidata.org and paste the actual Q-number URL. Don't trust any the model suggested, even with a "VERIFY" tag.
 
 ## What to do before publishing
@@ -479,4 +529,4 @@ If you've never written one before, look at [`examples/acme-gardens.json`](../ex
 
 ## Feedback on this prompt
 
-If you use this and the output is wrong in interesting ways, please [open a Discussion](../../discussions). The prompt will keep improving as more people run it against real sites.
+If you use this and the output is wrong in interesting ways, please [open a Discussion in 💬 General](../../discussions/categories/general). The prompt will keep improving as more people run it against real sites.
