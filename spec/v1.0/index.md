@@ -407,16 +407,18 @@ AFFILIATED_WITH * COVERS **
 
 \* type-constrained source ([§10](#10-validation)). \** `COVERS`: source must be `Concept`, `ProprietaryTerm`, or `Taxonomy`.
 
-### 7.2 Tier 2 — Structural predicates (6)
+### 7.2 Tier 2 — Structural predicates (7)
 
 Clear semantics, directional discipline required. `confidence` field optional. `RELATES_TO` is the predicate of last resort — use only when no other predicate fits.
 
 ```
 RELATES_TO †      PRECEDES        ENABLES
 PREVENTS          CONFLICTS_WITH  DESCRIBED_BY
+OFFERS *
 ```
 
 † `RELATES_TO`: validator warns above 20% of all relations.
+\* `OFFERS`: source must be `Organization`; target must be `SoftwareProduct`, `Service`, `Platform`, or `PhysicalProduct`. This is the commercial complement to `PRODUCED_BY` — use `OFFERS` on the Organization, `PRODUCED_BY` on the product or service. Never declare both directions between the same entity pair.
 
 ### 7.3 Tier 3 — Interpretive predicates (6)
 
@@ -433,8 +435,30 @@ SUITED_FOR        TARGETS         ACHIEVES
 - **`INCLUDES` vs `COVERS`:** object is a component of subject → `INCLUDES`. Subject is a hub and object is a sub-topic the publisher covers → `COVERS`.
 - **`ENABLES` vs `IMPROVES`:** structural enablement, unambiguous → `ENABLES` (Tier 2). Causal effect requiring editorial judgment → `IMPROVES` (Tier 3, `confidence` required).
 - **`TARGETS` vs `SUITED_FOR`:** designed for the object → `TARGETS`. Happens to fit well, not necessarily designed for it → `SUITED_FOR`.
+- **`OFFERS` vs `PRODUCED_BY`:** declare on the `Organization` (e.g. `Acme OFFERS Widget`) → `OFFERS`. Declare on the product/service (e.g. `Widget PRODUCED_BY Acme`) → `PRODUCED_BY`. Pick one direction; never declare both between the same entity pair.
 
-### 7.5 Declaring custom predicates
+### 7.5 Direction discipline and forbidden forms
+
+EntityMap predicates are directional and inverses are *implicit* — for each pair of entities, declare the relation in exactly one direction. Do not invent passive or inverted forms of standard predicates.
+
+The following predicate forms are **NOT valid** and MUST NOT appear in an EntityMap. Where there is a real-world need for the inverse meaning, swap subject and target and use the standard predicate instead.
+
+| Invalid form (do not use) | What to do instead |
+| --- | --- |
+| `MEASURED_BY` | Flip: `Metric MEASURES Concept` |
+| `ENABLED_BY` | Flip: `Tool ENABLES Outcome` |
+| `PRODUCES`, `PRODUCED_FOR` | Flip: `Product PRODUCED_BY Organization` |
+| `DEPENDED_ON_BY`, `DEPENDS_ON_BY` | Flip: `Dependent DEPENDS_ON Dependency` |
+| `REQUIRED_BY` | Flip: `Consumer REQUIRES Dependency` |
+| `IMPROVED_BY`, `DEGRADED_BY` | Flip: `Cause IMPROVES Effect` or `Cause DEGRADES Effect` |
+| `COVERS_BY`, `COVERED_BY` | Flip: `Hub COVERS SubTopic` |
+| `DESCRIBES`, `DESCRIBED_BY_INVERSE` | Use the standard `DESCRIBED_BY` in the reverse direction |
+| `AFFILIATED_WITH_BY` | Flip: `Person AFFILIATED_WITH Organization` |
+| `OFFERED_BY` | Flip: `Organization OFFERS Product` |
+
+The validator rejects any predicate not in the standard 24-predicate vocabulary and not declared via the root `vocabulary` block. If a publisher genuinely needs a predicate outside the standard set, it must be declared as a custom predicate ([§7.6](#76-declaring-custom-predicates)) — not invented as an inverted form of a standard one.
+
+### 7.6 Declaring custom predicates
 
 ```json
 "vocabulary": {
@@ -501,8 +525,12 @@ A conforming `entitymap.json` MUST satisfy all MUST requirements in [§3](#3-con
 - `MEASURES` used on non-`Metric` source entity.
 - `AFFILIATED_WITH` used on non-`Person` source entity.
 - `COVERS` used on non-hub source type.
+- `OFFERS` used on non-`Organization` source entity.
+- `OFFERS` used with a target that is not `SoftwareProduct`, `Service`, `Platform`, or `PhysicalProduct`.
 - Both directions of `PART_OF`/`INCLUDES` declared between the same entity pair.
 - `IMPROVES` and `DEGRADES`, or `ENABLES` and `PREVENTS`, declared between the same entity pair.
+- `OFFERS` and `PRODUCED_BY` declared between the same entity pair in either direction.
+- Use of an invalid inverted predicate form ([§7.5](#75-direction-discipline-and-forbidden-forms)) — e.g. `MEASURED_BY`, `ENABLED_BY`, `PRODUCES`, `DESCRIBES`, etc.
 - Chunk text exceeding 600 characters.
 - More than 5 chunks per entity.
 
@@ -569,7 +597,7 @@ The reference generator is available at [waikay.io/entitymap](https://waikay.io/
 
 The reference validator runs at [entitymap.org/validate](https://entitymap.org/validate).
 
-Third-party implementations are welcomed — share yours in [GitHub Discussions](../../../discussions).
+Third-party implementations are welcomed — share yours in [🙌 Show and tell](../../../discussions/categories/show-and-tell).
 
 ---
 
@@ -640,11 +668,14 @@ TIER 1 — HARD (11) — no confidence required
   *  type-constrained source
   ** COVERS: source must be Concept, ProprietaryTerm, or Taxonomy
 
-TIER 2 — STRUCTURAL (6) — confidence optional
+TIER 2 — STRUCTURAL (7) — confidence optional
   RELATES_TO †     PRECEDES         ENABLES
   PREVENTS         CONFLICTS_WITH   DESCRIBED_BY
+  OFFERS *
 
   † RELATES_TO: last resort — validator warns above 20% of all relations
+  *  OFFERS: source must be Organization;
+             target must be SoftwareProduct, Service, Platform, or PhysicalProduct
 
 TIER 3 — INTERPRETIVE (6) — confidence REQUIRED
   IMPROVES         DEGRADES         LEADS_TO
@@ -659,7 +690,7 @@ RESERVED — FINANCE PROFILE (v1.1)
 RESERVED — EDUCATION PROFILE (v1.1)
   TEACHES  PREREQUISITE_FOR  ASSESSES
 
-TOTAL CORE: 23 predicates
+TOTAL CORE: 24 predicates
 ```
 
 For full per-predicate definitions, examples, and decision rules, see [predicates.md](predicates.md).
