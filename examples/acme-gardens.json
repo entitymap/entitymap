@@ -1,0 +1,96 @@
+{
+  "version": "1.0",
+  "schema": "https://entitymap.org/spec/v1.0",
+  "publisher": {
+    "name": "Acme Gardens",
+    "url": "https://acmegardens.com",
+    "sameAs": "https://www.wikidata.org/wiki/Q12345678"
+  },
+  "generated": "2026-04-07T00:00:00Z",
+  "profile": "core",
+  "verificationStatus": "self-declared",
+  "entities": [
+    {
+      "entityId": "e_001",
+      "@type": "Concept",
+      "name": "Companion Planting",
+      "description": "The practice of growing different plants in proximity for mutual benefit, including pest control, pollination support, and improved yield.",
+      "sameAs": "https://www.wikidata.org/wiki/Q905413",
+      "maturityStatus": "established",
+      "audienceType": "general",
+      "relations": [
+        {
+          "predicate": "IMPROVES",
+          "targetId": "e_002",
+          "targetName": "Crop Yield",
+          "confidence": "declared"
+        },
+        {
+          "predicate": "PREVENTS",
+          "targetId": "e_003",
+          "targetName": "Pest Damage"
+        }
+      ],
+      "hasChunks": [
+        {
+          "chunkId": "c_001",
+          "text": "Companion planting pairs plants that benefit each other — growing basil near tomatoes repels aphids and improves fruit flavour.",
+          "sourceUrl": "https://acmegardens.com/companion-planting-guide",
+          "pageTitle": "The Complete Companion Planting Guide",
+          "publisher": "Acme Gardens",
+          "retrieved": "2026-04-07T09:14:00Z",
+          "relevanceScore": 0.95,
+          "contentType": "definition"
+        },
+        {
+          "chunkId": "c_002",
+          "text": "Three Sisters planting — corn, beans, and squash grown together — is the classic North American example of companion planting in practice.",
+          "sourceUrl": "https://acmegardens.com/companion-planting-guide",
+          "pageTitle": "The Complete Companion Planting Guide",
+          "publisher": "Acme Gardens",
+          "retrieved": "2026-04-07T09:14:00Z",
+          "relevanceScore": 0.88,
+          "contentType": "example"
+        }
+      ]
+    },
+    {
+      "entityId": "e_002",
+      "@type": "Concept",
+      "name": "Crop Yield",
+      "description": "The measurable amount of agricultural produce harvested per unit area, typically expressed in kilograms per hectare or pounds per acre.",
+      "sameAs": "https://www.wikidata.org/wiki/Q583664",
+      "hasChunks": [
+        {
+          "chunkId": "c_003",
+          "text": "Improving crop yield depends on soil quality, water management, pollinator activity, and — increasingly — well-chosen companion plantings.",
+          "sourceUrl": "https://acmegardens.com/crop-yield-guide",
+          "pageTitle": "How to Improve Crop Yield",
+          "publisher": "Acme Gardens",
+          "retrieved": "2026-04-07T09:15:00Z",
+          "relevanceScore": 0.92,
+          "contentType": "evidence"
+        }
+      ]
+    },
+    {
+      "entityId": "e_003",
+      "@type": "Concept",
+      "name": "Pest Damage",
+      "description": "The reduction in plant health or harvestable yield caused by insects, rodents, fungi, or other organisms feeding on or otherwise harming cultivated plants.",
+      "sameAs": "https://www.wikidata.org/wiki/Q6028733",
+      "hasChunks": [
+        {
+          "chunkId": "c_004",
+          "text": "Pest damage can be significantly reduced through companion planting, encouraging natural predators, and rotating crops between seasons.",
+          "sourceUrl": "https://acmegardens.com/pest-control",
+          "pageTitle": "Natural Pest Control Methods",
+          "publisher": "Acme Gardens",
+          "retrieved": "2026-04-07T09:16:00Z",
+          "relevanceScore": 0.91,
+          "contentType": "procedure"
+        }
+      ]
+    }
+  ]
+}
