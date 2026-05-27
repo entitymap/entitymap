@@ -1,15 +1,16 @@
 # Predicate reference
 
-The 23 standard predicates of EntityMap v1.0, with definitions, usage examples, and tier classification. The summary table is in [§7 of the spec](index.md#7-standard-predicate-vocabulary); this file is the long-form companion.
+The 24 standard predicates of EntityMap v1.0, with definitions, usage examples, and tier classification. The summary table is in [§7 of the spec](index.md#7-standard-predicate-vocabulary); this file is the long-form companion.
 
-All predicates are uppercase with underscores between words. Inverses are implicit — never declare both directions of a relationship pair (e.g. `PART_OF` and `INCLUDES`) between the same two entities.
+All predicates are uppercase with underscores between words. Inverses are implicit — never declare both directions of a relationship pair (e.g. `PART_OF` and `INCLUDES`) between the same two entities. Inverted or passive forms of standard predicates (e.g. `MEASURED_BY`, `ENABLED_BY`, `DESCRIBES`) are **not valid** — see [Forbidden forms](#forbidden-forms).
 
 ## Quick index
 
 - [Tier 1 — Hard (11)](#tier-1--hard) · machine-trustable, `confidence` not required
-- [Tier 2 — Structural (6)](#tier-2--structural) · clear semantics, `confidence` optional
+- [Tier 2 — Structural (7)](#tier-2--structural) · clear semantics, `confidence` optional
 - [Tier 3 — Interpretive (6)](#tier-3--interpretive) · editorial judgment, `confidence` required
 - [Decision rules](#key-decision-rules) · which predicate to pick when two could plausibly fit
+- [Forbidden forms](#forbidden-forms) · inverted predicate names that are not valid
 - [Declaring custom predicates](#declaring-custom-predicates) · for domain terms outside the core vocabulary
 
 ---
@@ -132,6 +133,23 @@ The subject entity is documented or characterised by the object entity.
 
 > EntityMap **DESCRIBED_BY** EntityMap Specification v1.0
 
+### OFFERS **
+
+The subject entity makes the object entity commercially available — sells it, distributes it, or makes it accessible as a product, service, or platform.
+
+> Waikay **OFFERS** EntityMap Generator
+> Acme Gardens **OFFERS** Companion Planting Consultancy
+
+**Source constraint:** the source entity MUST have `@type: "Organization"`.
+**Target constraint:** the target entity MUST have `@type: "SoftwareProduct"`, `"Service"`, `"Platform"`, or `"PhysicalProduct"`.
+
+`OFFERS` is the commercial complement to `PRODUCED_BY`. The pair captures two facets of the same relationship from opposite sides — declare it in one direction only:
+
+- *Organization-side view:* `Acme OFFERS Widget` (`OFFERS`)
+- *Product-side view:* `Widget PRODUCED_BY Acme` (`PRODUCED_BY`)
+
+The validator rejects an EntityMap that declares both `OFFERS` and `PRODUCED_BY` between the same pair of entities.
+
 ---
 
 ## Tier 3 — Interpretive
@@ -209,11 +227,43 @@ Is the enablement structural and unambiguous (the subject makes the object possi
 
 Was the subject designed for the object? → `TARGETS`. Does the subject just happen to fit well? → `SUITED_FOR`.
 
+### `OFFERS` vs `PRODUCED_BY`
+
+Both describe the relationship between an organization and a product/service. Pick one direction; the validator rejects EntityMaps that declare both between the same entity pair.
+
+- *Organization-side view:* `Acme OFFERS Widget` — declare on the Organization, treating the product/service as the target.
+- *Product-side view:* `Widget PRODUCED_BY Acme` — declare on the product/service, treating the organization as the target.
+
+A publisher's own EntityMap should typically use `OFFERS` (the publisher is the organization, and listing what it offers reads naturally). Third-party EntityMaps describing other organizations' products may prefer `PRODUCED_BY` (the product is the entity of interest, the organization is attribution).
+
+---
+
+## Forbidden forms
+
+EntityMap predicates are directional. Inverted or passive forms of standard predicates are **not valid** — declare the relation in the standard direction instead. The validator rejects an EntityMap containing any of these forms.
+
+| Invalid form | What to do instead |
+| --- | --- |
+| `MEASURED_BY` | Flip: `Metric MEASURES Concept` |
+| `ENABLED_BY` | Flip: `Tool ENABLES Outcome` |
+| `PRODUCES`, `PRODUCED_FOR` | Flip: `Product PRODUCED_BY Organization` |
+| `DEPENDED_ON_BY`, `DEPENDS_ON_BY` | Flip: `Dependent DEPENDS_ON Dependency` |
+| `REQUIRED_BY` | Flip: `Consumer REQUIRES Dependency` |
+| `IMPROVED_BY`, `DEGRADED_BY` | Flip: `Cause IMPROVES Effect` or `Cause DEGRADES Effect` |
+| `COVERS_BY`, `COVERED_BY` | Flip: `Hub COVERS SubTopic` |
+| `DESCRIBES`, `DESCRIBED_BY_INVERSE` | Use the standard `DESCRIBED_BY` in the reverse direction |
+| `AFFILIATED_WITH_BY` | Flip: `Person AFFILIATED_WITH Organization` |
+| `OFFERED_BY` | Flip: `Organization OFFERS Product` |
+
+The pattern is general, not exhaustive: if a predicate name ends in `_BY` and isn't in the [Tier 1 / Tier 2 / Tier 3 lists above](#quick-index), it's probably an invented inverse. Swap subject and target and use the standard form.
+
+If a publisher genuinely needs a predicate outside the standard 24, declare it as a custom predicate (next section) — not as an inverted form of a standard one.
+
 ---
 
 ## Declaring custom predicates
 
-If your domain genuinely needs a predicate outside the standard 23, you can declare custom predicates in the root `vocabulary` block:
+If your domain genuinely needs a predicate outside the standard 24, you can declare custom predicates in the root `vocabulary` block:
 
 ```json
 "vocabulary": {
