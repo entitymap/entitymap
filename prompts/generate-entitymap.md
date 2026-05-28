@@ -24,7 +24,15 @@ A few things observed across models. These are the most common ways the output g
 
 ---
 
-## The prompt
+## The simple prompt
+
+Copy everything inside the box below as a single message into your LLM conversation.
+
+````
+Read the page at https://entitymap.org/spec/v1.0 then look at the most important pages on [yoursite.com] and generate the JSON and HTML files
+````
+
+## The advanced prompt
 
 Copy everything inside the box below as a single message into your LLM conversation. There's nothing to attach beforehand — the spec is embedded in the prompt.
 
