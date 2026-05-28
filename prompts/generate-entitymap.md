@@ -29,7 +29,8 @@ A few things observed across models. These are the most common ways the output g
 Copy everything inside the box below as a single message into your LLM conversation.
 
 ````
-Read the page at https://entitymap.org/spec/v1.0 then look at the most important pages on [yoursite.com] and generate the JSON and HTML files
+Read the page at https://entitymap.org/spec/v1.0 then look at the most important pages
+on [yoursite.com] and generate the JSON and HTML files
 ````
 
 ## The advanced prompt
