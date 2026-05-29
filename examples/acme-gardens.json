@@ -3,10 +3,9 @@
   "schema": "https://entitymap.org/spec/v1.0",
   "publisher": {
     "name": "Acme Gardens",
-    "url": "https://acmegardens.com",
-    "sameAs": "https://www.wikidata.org/wiki/Q12345678"
+    "url": "https://acmegardens.com"
   },
-  "generated": "2026-04-07T00:00:00Z",
+  "generated": "2026-05-28T00:00:00Z",
   "profile": "core",
   "verificationStatus": "self-declared",
   "entities": [
@@ -15,7 +14,7 @@
       "@type": "Concept",
       "name": "Companion Planting",
       "description": "The practice of growing different plants in proximity for mutual benefit, including pest control, pollination support, and improved yield.",
-      "sameAs": "https://www.wikidata.org/wiki/Q905413",
+      "sameAs": "https://en.wikipedia.org/wiki/Companion_planting",
       "maturityStatus": "established",
       "audienceType": "general",
       "relations": [
@@ -59,7 +58,7 @@
       "@type": "Concept",
       "name": "Crop Yield",
       "description": "The measurable amount of agricultural produce harvested per unit area, typically expressed in kilograms per hectare or pounds per acre.",
-      "sameAs": "https://www.wikidata.org/wiki/Q583664",
+      "sameAs": "https://en.wikipedia.org/wiki/Crop_yield",
       "hasChunks": [
         {
           "chunkId": "c_003",
@@ -78,7 +77,6 @@
       "@type": "Concept",
       "name": "Pest Damage",
       "description": "The reduction in plant health or harvestable yield caused by insects, rodents, fungi, or other organisms feeding on or otherwise harming cultivated plants.",
-      "sameAs": "https://www.wikidata.org/wiki/Q6028733",
       "hasChunks": [
         {
           "chunkId": "c_004",
@@ -89,6 +87,145 @@
           "retrieved": "2026-04-07T09:16:00Z",
           "relevanceScore": 0.91,
           "contentType": "procedure"
+        }
+      ]
+    },
+    {
+      "entityId": "e_004",
+      "@type": "Organization",
+      "name": "Acme Gardens",
+      "description": "An independent horticultural consultancy and online resource publishing guides on companion planting, soil management, and small-scale organic growing, with on-site advisory services across southern France.",
+      "alternateName": "Acme",
+      "audienceType": "general",
+      "relations": [
+        {
+          "predicate": "OFFERS",
+          "targetId": "e_005",
+          "targetName": "Companion Planting Consultation"
+        }
+      ],
+      "hasChunks": [
+        {
+          "chunkId": "c_005",
+          "text": "Acme Gardens is an independent horticultural consultancy founded in 2018, publishing field-tested guides and offering on-site advisory work across southern France.",
+          "sourceUrl": "https://acmegardens.com/about",
+          "pageTitle": "About Acme Gardens",
+          "publisher": "Acme Gardens",
+          "retrieved": "2026-04-07T09:17:00Z",
+          "relevanceScore": 0.97,
+          "contentType": "definition"
+        }
+      ]
+    },
+    {
+      "entityId": "e_005",
+      "@type": "Service",
+      "name": "Companion Planting Consultation",
+      "description": "A paid advisory service in which an Acme Gardens horticulturist surveys a client's plot, identifies pest and yield issues, and produces a season-by-season companion-planting plan tailored to the site's soil, climate, and existing crops.",
+      "audienceType": "general",
+      "relations": [
+        {
+          "predicate": "DEPENDS_ON",
+          "targetId": "e_001",
+          "targetName": "Companion Planting"
+        },
+        {
+          "predicate": "INCLUDES",
+          "targetId": "e_006",
+          "targetName": "Service Coverage Area"
+        }
+      ],
+      "hasChunks": [
+        {
+          "chunkId": "c_006",
+          "text": "A Companion Planting Consultation includes a two-hour site visit, soil and exposure assessment, and a written planting plan covering the next three growing seasons.",
+          "sourceUrl": "https://acmegardens.com/services/consultation",
+          "pageTitle": "Companion Planting Consultation",
+          "publisher": "Acme Gardens",
+          "retrieved": "2026-04-07T09:18:00Z",
+          "relevanceScore": 0.94,
+          "contentType": "definition"
+        },
+        {
+          "chunkId": "c_007",
+          "text": "Most clients book a consultation in late winter, giving time to source seed and prepare beds before the spring sowing window.",
+          "sourceUrl": "https://acmegardens.com/services/consultation",
+          "pageTitle": "Companion Planting Consultation",
+          "publisher": "Acme Gardens",
+          "retrieved": "2026-04-07T09:18:00Z",
+          "relevanceScore": 0.82,
+          "contentType": "procedure"
+        }
+      ]
+    },
+    {
+      "entityId": "e_006",
+      "@type": "Place",
+      "name": "Service Coverage Area",
+      "description": "The set of cities in which Acme Gardens delivers on-site Companion Planting Consultations. Coverage reflects the area reachable within a single-day round trip from the Marseille office and is reviewed each season.",
+      "audienceType": "general",
+      "relations": [
+        {
+          "predicate": "INCLUDES",
+          "targetId": "e_007",
+          "targetName": "Marseille"
+        },
+        {
+          "predicate": "INCLUDES",
+          "targetId": "e_008",
+          "targetName": "Aix-en-Provence"
+        }
+      ],
+      "hasChunks": [
+        {
+          "chunkId": "c_008",
+          "text": "On-site consultations are available in Marseille and Aix-en-Provence. Sites outside this area can be served remotely via photo survey and a video walk-through.",
+          "sourceUrl": "https://acmegardens.com/services/coverage",
+          "pageTitle": "Service Coverage Area",
+          "publisher": "Acme Gardens",
+          "retrieved": "2026-04-07T09:19:00Z",
+          "relevanceScore": 0.96,
+          "contentType": "definition"
+        }
+      ]
+    },
+    {
+      "entityId": "e_007",
+      "@type": "Place",
+      "name": "Marseille",
+      "description": "France's second-largest city and the principal port of the Mediterranean coast. Its hot dry summers and limestone soils favour drought-tolerant companions such as rosemary and thyme interplanted with tomatoes and courgettes.",
+      "sameAs": "https://www.wikidata.org/wiki/Q23482",
+      "audienceType": "general",
+      "hasChunks": [
+        {
+          "chunkId": "c_009",
+          "text": "Marseille's coastal microclimate — hot summers tempered by the Mistral — rewards aromatic companions that shade the soil and draw pollinators through the dry months.",
+          "sourceUrl": "https://acmegardens.com/regions/marseille",
+          "pageTitle": "Companion Planting in Marseille",
+          "publisher": "Acme Gardens",
+          "retrieved": "2026-04-07T09:20:00Z",
+          "relevanceScore": 0.92,
+          "contentType": "evidence"
+        }
+      ]
+    },
+    {
+      "entityId": "e_008",
+      "@type": "Place",
+      "name": "Aix-en-Provence",
+      "description": "A historic city in the Bouches-du-Rhône department, 30km north of Marseille. Slightly cooler summers and heavier clay soils than the coast make it well-suited to deeper-rooted companions such as artichokes and broad beans.",
+      "sameAs": "https://www.wikidata.org/wiki/Q47465",
+      "audienceType": "general",
+      "hasChunks": [
+        {
+          "chunkId": "c_010",
+          "text": "Aix-en-Provence's heavier soils hold spring moisture longer than the coast, extending the window for cool-season companions like broad beans and peas alongside early brassicas.",
+          "sourceUrl": "https://acmegardens.com/regions/aix-en-provence",
+          "pageTitle": "Companion Planting in Aix-en-Provence",
+          "publisher": "Acme Gardens",
+          "retrieved": "2026-04-07T09:21:00Z",
+          "relevanceScore": 0.91,
+          "contentType": "evidence"
         }
       ]
     }
