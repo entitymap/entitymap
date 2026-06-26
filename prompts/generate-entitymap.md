@@ -539,4 +539,4 @@ If you've never written one before, look at [`examples/acme-gardens.json`](../ex
 
 ## Feedback on this prompt
 
-If you use this and the output is wrong in interesting ways, please [open a Discussion in 💬 General](../../discussions/categories/general). The prompt will keep improving as more people run it against real sites.
+If you use this and the output is wrong in interesting ways, please [open a Discussion in 💬 General](https://github.com/entitymap/entitymap/discussions/categories/general). The prompt will keep improving as more people run it against real sites.
